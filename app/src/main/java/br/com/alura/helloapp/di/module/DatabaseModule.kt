@@ -2,8 +2,11 @@ package br.com.alura.helloapp.di.module
 
 import android.content.Context
 import androidx.room.Room
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import br.com.alura.helloapp.database.ContatoDao
 import br.com.alura.helloapp.database.HelloAppDatabase
+import br.com.alura.helloapp.database.UserDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -12,6 +15,12 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 private const val DATABASE_NAME = "helloApp.db"
+
+private val MIGRATION_1_2 = object : Migration(1, 2) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("CREATE TABLE IF NOT EXISTS User (`name` TEXT NOT NULL, `password` TEXT NOT NULL, PRIMARY KEY(`name`))")
+    }
+}
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -24,11 +33,17 @@ class DatabaseModule {
             context,
             HelloAppDatabase::class.java,
             DATABASE_NAME
-        ).build()
+        ).addMigrations(MIGRATION_1_2)
+            .build()
     }
 
     @Provides
     fun provideContatoDao(db: HelloAppDatabase): ContatoDao {
         return db.contatoDao()
+    }
+
+    @Provides
+    fun provideUserDao(db: HelloAppDatabase): UserDao {
+        return db.userDao()
     }
 }

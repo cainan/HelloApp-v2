@@ -2,11 +2,9 @@ package br.com.alura.helloapp.ui.login
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.ViewModel
 import br.com.alura.helloapp.data.User
 import br.com.alura.helloapp.database.UserDao
-import br.com.alura.helloapp.preferences.PreferencesKey
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -47,12 +45,6 @@ class FormularioLoginViewModel @Inject constructor(
     }
 
     suspend fun salvaLogin() {
-        dataStore.edit { preferences ->
-            preferences[PreferencesKey.USUARIO] =
-                _uiState.value.usuario
-            preferences[PreferencesKey.SENHA] =
-                _uiState.value.senha
-        }
         userDao.insert(
             User(
                 userId = _uiState.value.usuario, password = _uiState.value.senha

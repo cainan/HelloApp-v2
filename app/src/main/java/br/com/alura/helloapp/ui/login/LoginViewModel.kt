@@ -4,17 +4,20 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.ViewModel
+import br.com.alura.helloapp.database.UserDao
 import br.com.alura.helloapp.preferences.PreferencesKey
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val dataStore: DataStore<Preferences>,
+    private val userDao: UserDao,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginUiState())
@@ -39,20 +42,18 @@ class LoginViewModel @Inject constructor(
     }
 
     suspend fun tentaLogar() {
-        dataStore.data.collect { preferences ->
-            val senha = preferences[PreferencesKey.SENHA]
-            val usuario = preferences[PreferencesKey.USUARIO]
 
-            if (usuario == _uiState.value.usuario &&
-                senha == _uiState.value.senha
-            ) {
-                dataStore.edit {
-                    it[PreferencesKey.LOGADO] = true
-                }
-                logaUsuario()
-            } else {
-                exibeErro()
+        val searchedUser = userDao.buscaPorId(_uiState.value.usuario).first()
+
+        if (searchedUser != null &&
+            searchedUser.password == _uiState.value.senha
+        ) {
+            dataStore.edit {
+                it[PreferencesKey.LOGADO] = true
             }
+            logaUsuario()
+        } else {
+            exibeErro()
         }
     }
 

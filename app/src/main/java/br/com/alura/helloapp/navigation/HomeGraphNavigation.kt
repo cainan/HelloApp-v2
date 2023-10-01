@@ -13,7 +13,7 @@ fun NavGraphBuilder.homeGraph(
     onNavegaParaDetalhes: (Long) -> Unit,
     onNavegaParaFormularioContato: () -> Unit,
     onNavegaParaDialgoUsuarios: (String) -> Unit,
-    onNavegaParaBuscaContatos: () -> Unit
+    onNavegaParaBuscaContatos: () -> Unit,
 ) {
     navigation(
         startDestination = DestinosHelloApp.ListaContatos.rota,
@@ -32,9 +32,9 @@ fun NavGraphBuilder.homeGraph(
                     onNavegaParaFormularioContato()
                 },
                 onClickListaUsuarios = {
-                    // state.usuarioAtual?.let { usuarioAtual ->
-                    onNavegaParaDialgoUsuarios("usuarioAtual")
-                    // }
+                    state.usuarioAtual?.let { usuarioAtual ->
+                        onNavegaParaDialgoUsuarios(usuarioAtual)
+                    }
                 },
                 onClickBuscaContatos = onNavegaParaBuscaContatos
             )

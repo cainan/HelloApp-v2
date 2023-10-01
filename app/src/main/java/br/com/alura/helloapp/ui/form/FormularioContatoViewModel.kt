@@ -10,11 +10,13 @@ import br.com.alura.helloapp.data.Contato
 import br.com.alura.helloapp.database.ContatoDao
 import br.com.alura.helloapp.extensions.converteParaDate
 import br.com.alura.helloapp.extensions.converteParaString
+import br.com.alura.helloapp.preferences.PreferencesKey
 import br.com.alura.helloapp.util.ID_CONTATO
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -23,7 +25,7 @@ import javax.inject.Inject
 class FormularioContatoViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val contatoDao: ContatoDao,
-    private val dataStore: DataStore<Preferences>
+    private val dataStore: DataStore<Preferences>,
 ) : ViewModel() {
 
     private val idContato = savedStateHandle.get<Long>(ID_CONTATO)
@@ -106,17 +108,20 @@ class FormularioContatoViewModel @Inject constructor(
     }
 
     suspend fun salva() {
-        with(_uiState.value) {
-            contatoDao.insere(
-                Contato(
-                    id = id,
-                    nome = nome,
-                    sobrenome = sobrenome,
-                    telefone = telefone,
-                    fotoPerfil = fotoPerfil,
-                    aniversario = aniversario
+        dataStore.data.first()[PreferencesKey.LOGGED_USER]?.let {
+            with(_uiState.value) {
+                contatoDao.insere(
+                    Contato(
+                        id = id,
+                        nome = nome,
+                        sobrenome = sobrenome,
+                        telefone = telefone,
+                        fotoPerfil = fotoPerfil,
+                        aniversario = aniversario,
+                        user = it
+                    )
                 )
-            )
+            }
         }
     }
 }

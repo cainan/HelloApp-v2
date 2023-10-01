@@ -1,8 +1,9 @@
 package br.com.alura.helloapp.data
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.util.*
+import java.util.Date
 
 @Entity
 data class Contato(
@@ -13,4 +14,6 @@ data class Contato(
     val telefone: String = "",
     val fotoPerfil: String = "",
     val aniversario: Date? = null,
+    @ColumnInfo(defaultValue = "")
+    val user: String = "",
 )

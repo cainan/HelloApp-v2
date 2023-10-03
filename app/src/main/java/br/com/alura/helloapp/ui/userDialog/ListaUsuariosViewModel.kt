@@ -2,10 +2,12 @@ package br.com.alura.helloapp.ui.userDialog
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.alura.helloapp.database.UserDao
+import br.com.alura.helloapp.preferences.PreferencesKey
 import br.com.alura.helloapp.util.ID_USUARIO_ATUAL
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,6 +45,18 @@ class ListaUsuariosViewModel @Inject constructor(
                     nome = usuarioLogado.userName
                 )
             }
+        }
+
+        userDao.searchAll().collect { others ->
+            _uiState.value = _uiState.value.copy(
+                anotherUsers = others.filter { it.userId != usuarioAtual }
+            )
+        }
+    }
+
+    suspend fun updateLoggedUser(novoUsuario: String) {
+        dataStore.edit {
+            it[PreferencesKey.LOGGED_USER] = novoUsuario
         }
     }
 }

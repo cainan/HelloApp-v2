@@ -1,10 +1,21 @@
 package br.com.alura.helloapp.ui.userDialog
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.*
+import androidx.compose.material.Card
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
@@ -17,6 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import br.com.alura.helloapp.R
+import br.com.alura.helloapp.data.User
 import br.com.alura.helloapp.ui.components.AsyncImagePerfil
 import br.com.alura.helloapp.ui.theme.HelloAppTheme
 
@@ -25,7 +37,7 @@ fun GerenciaUsuariosTela(
     state: GerenciaUsuariosUiState,
     modifier: Modifier = Modifier,
     onClickAbreDetalhes: (String) -> Unit = {},
-    onClickVolta: () -> Unit = {}
+    onClickVolta: () -> Unit = {},
 ) {
     Scaffold(
         topBar = {
@@ -36,11 +48,11 @@ fun GerenciaUsuariosTela(
     ) { paddingValues ->
 
         LazyColumn(modifier.padding(paddingValues)) {
-//            items(state.usuarios) { usuario ->
-//                UsuarioGerenciaItem(usuario) { nomeUsuario ->
-//                    onClickAbreDetalhes(nomeUsuario)
-//                }
-//            }
+            items(state.usuarios) { usuario ->
+                UsuarioGerenciaItem(usuario) { nomeUsuario ->
+                    onClickAbreDetalhes(nomeUsuario)
+                }
+            }
         }
 
     }
@@ -48,7 +60,7 @@ fun GerenciaUsuariosTela(
 
 @Composable
 fun AppBarGerenciaUsuarios(
-    onClickVolta: () -> Unit = {}
+    onClickVolta: () -> Unit = {},
 ) {
     TopAppBar(
         title = {
@@ -69,10 +81,11 @@ fun AppBarGerenciaUsuarios(
 
 @Composable
 fun UsuarioGerenciaItem(
-    onClick: (String) -> Unit
+    user: User,
+    onClick: (String) -> Unit,
 ) {
     Card(
-        Modifier.clickable { },
+        Modifier.clickable { onClick(user.userId) },
         backgroundColor = MaterialTheme.colors.background
     ) {
         Row(
@@ -90,12 +103,12 @@ fun UsuarioGerenciaItem(
             ) {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = "Nome exemplo",
+                    text = user.userName,
                     fontWeight = FontWeight.Bold,
                 )
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = "Usuario exemplo"
+                    text = user.userId
                 )
             }
         }
@@ -116,7 +129,14 @@ fun AppBarGerenciaUsuariosPreview() {
 fun BuscaContatosPreview() {
     HelloAppTheme {
         GerenciaUsuariosTela(
-            state = GerenciaUsuariosUiState()
+            state = GerenciaUsuariosUiState(
+                usuarios = listOf(
+                    User(
+                        userId = "User Id Teste",
+                        userName = "User Name Teste"
+                    )
+                )
+            )
         )
     }
 }

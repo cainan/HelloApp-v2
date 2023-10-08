@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import br.com.alura.helloapp.data.User
 import br.com.alura.helloapp.database.UserDao
 import br.com.alura.helloapp.util.ID_USUARIO_ATUAL
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -54,6 +55,24 @@ class FormularioUsuarioViewModel @Inject constructor(
     fun onClickMostraMensagemExclusao() {
         _uiState.value = _uiState.value.copy(
             mostraMensagemExclusao = true
+        )
+    }
+
+    suspend fun update() {
+        userDao.update(
+            User(
+                userId = _uiState.value.nomeUsuario,
+                password = _uiState.value.senha,
+                userName = _uiState.value.nome,
+            )
+        )
+    }
+
+    suspend fun delete() {
+        userDao.delete(
+            User(
+                userId = _uiState.value.nomeUsuario,
+            )
         )
     }
 }

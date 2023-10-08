@@ -83,11 +83,13 @@ fun NavGraphBuilder.usuariosGraph(
                 onClickVolta = onVolta,
                 onClickSalva = {
                     coroutineScope.launch {
+                        viewModel.update()
                         onVolta()
                     }
                 },
                 onClickApaga = {
                     coroutineScope.launch {
+                        viewModel.delete()
                         onVolta()
                     }
                 },

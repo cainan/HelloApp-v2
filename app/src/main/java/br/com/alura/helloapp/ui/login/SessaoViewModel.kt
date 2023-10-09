@@ -2,6 +2,8 @@ package br.com.alura.helloapp.ui.login
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,6 +22,13 @@ class SessaoViewModel @Inject constructor(
     init {
 
     }
+
+    suspend fun desloga() {
+        dataStore.edit { preferences ->
+            preferences[booleanPreferencesKey("logado")] = false
+        }
+    }
+
 }
 
 data class SessaoUiState(val logado: Boolean = true)

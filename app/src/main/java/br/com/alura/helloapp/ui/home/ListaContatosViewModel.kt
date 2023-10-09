@@ -48,9 +48,4 @@ class ListaContatosViewModel @Inject constructor(
         }
     }
 
-    suspend fun desloga() {
-        dataStore.edit { preferences ->
-            preferences[booleanPreferencesKey("logado")] = false
-        }
-    }
 }

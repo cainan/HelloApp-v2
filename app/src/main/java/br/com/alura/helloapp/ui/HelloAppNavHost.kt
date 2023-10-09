@@ -1,15 +1,30 @@
 package br.com.alura.helloapp.ui
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import br.com.alura.helloapp.navigation.*
+import br.com.alura.helloapp.navigation.DestinosHelloApp
+import br.com.alura.helloapp.navigation.DetalhesContato
+import br.com.alura.helloapp.navigation.FormularioContato
+import br.com.alura.helloapp.navigation.FormularioUsuario
+import br.com.alura.helloapp.navigation.ListaUsuarios
+import br.com.alura.helloapp.navigation.buscaContatosGraph
+import br.com.alura.helloapp.navigation.detalhesContatoGraph
+import br.com.alura.helloapp.navigation.formularioContatoGraph
+import br.com.alura.helloapp.navigation.homeGraph
+import br.com.alura.helloapp.navigation.loginGraph
+import br.com.alura.helloapp.navigation.splashGraph
+import br.com.alura.helloapp.navigation.usuariosGraph
+import br.com.alura.helloapp.ui.login.SessaoViewModel
 
 @Composable
 fun HelloAppNavHost(
-    navController: NavHostController, modifier: Modifier = Modifier
+    navController: NavHostController, modifier: Modifier = Modifier,
 ) {
     NavHost(
         navController = navController,
@@ -18,7 +33,7 @@ fun HelloAppNavHost(
     ) {
         splashGraph(
             onNavegaParaLogin = {
-                navController.NavegaParaLoginElimpaBackStack()
+                navController.navegaParaLoginElimpaBackStack()
             },
             onNavegaParaHome = {
                 navController.navegaParaHome()
@@ -32,7 +47,7 @@ fun HelloAppNavHost(
                 navController.navegaParaFormlarioLogin()
             },
             onNavegaParaLogin = {
-                navController.NavegaParaLoginElimpaBackStack()
+                navController.navegaParaLoginElimpaBackStack()
             },
         )
         homeGraph(
@@ -88,6 +103,15 @@ fun HelloAppNavHost(
             },
         )
     }
+
+    val viewModel = hiltViewModel<SessaoViewModel>()
+    val state = viewModel.uiState.collectAsState()
+
+    LaunchedEffect(key1 = state.value.logado) {
+        if (!state.value.logado) {
+            navController.navegaParaLoginElimpaBackStack()
+        }
+    }
 }
 
 
@@ -111,7 +135,7 @@ fun NavHostController.navegaParaFormularioContato(idContato: Long = 0L) {
     navigate("${FormularioContato.rota}/$idContato")
 }
 
-fun NavHostController.NavegaParaLoginElimpaBackStack() {
+fun NavHostController.navegaParaLoginElimpaBackStack() {
     navegaLimpo(DestinosHelloApp.LoginGraph.rota)
 }
 
